@@ -2,15 +2,25 @@
 
 my %count-for;
 
+my $total-reads = 0;
+
 for lines() -> $line
 {
     my ($count, $seq) = parse-line($line); 
     %count-for{$seq} += $count;
+    $total-reads     += $count;
 }
 
-%count-for.sort( .value ) -> $pair
+my $previous-count = Inf;
+my $rank           =   0;
+my $uniq           =   0;
+my $rpm            =   0;
+
+for %count-for.sort( { $^b.value <=> $^a.value } ) -> $pair
 {
-    "$pair.value()\t$pair.key".say; 
+    my ($seq, $count) = $pair.kv;
+    my $rpm = $count * 10**6 / $total-reads;
+    say "$count\t$seq";
 }
 
 sub parse-line ($line)
