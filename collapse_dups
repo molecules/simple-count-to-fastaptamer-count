@@ -19,8 +19,26 @@ my $rpm            =   0;
 for %count-for.sort( { $^b.value <=> $^a.value } ) -> $pair
 {
     my ($seq, $count) = $pair.kv;
+    if $count < $previous-count
+    {
+        # increment rank
+        $rank++;
+
+        # reset identifier that distinguishes sequences of the same rank
+        $uniq = 1;
+
+        # update "previous count" so that it will be accurate for the next iteration
+        $previous-count = $count;
+    }
+
+    # Calculate reads per million
     my $rpm = $count * 10**6 / $total-reads;
-    say "$count\t$seq";
+
+    # print record
+    say ">{$rank}($uniq)-{$count}-{$rpm}\n$seq";
+
+    # Update identifier that distinguishes sequences of the same rank
+    $uniq++;
 }
 
 sub parse-line ($line)

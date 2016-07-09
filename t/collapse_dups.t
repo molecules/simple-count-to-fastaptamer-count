@@ -18,8 +18,8 @@ sub input
     return q:to/END/;
         60    AAA
          40                                         AAA
-        20    GGG
-        15    CCC
+        70    GGG
+        20    CCC
          10 GGG
         END
 }
@@ -27,9 +27,12 @@ sub input
 sub expected
 {
     return q:to/END/;
-        100	AAA
-        30	GGG
-        15	CCC
+        >1(1)-100-500000
+        AAA
+        >2(1)-80-400000
+        GGG
+        >3(1)-20-100000
+        CCC
         END
 }
 
@@ -47,4 +50,3 @@ sub filename-for ($content)
     spurt($temp-filename, $content);
     return $temp-filename;
 }
-
